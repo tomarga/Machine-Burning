@@ -3,7 +3,7 @@
 # ulazne varijable:
 #                    data - dataframe varijabla sa značajkama
 #                    classes - varijabla koja ima informacije o početnom i krajnjem retku neke klase malwarea
-#                    features - polje sa točno određenim stupcim koji predstavljaju značajke za koje ćemo nacrtati histogram
+#                    features - polje sa točno određenim stupcima koji predstavljaju značajke za koje ćemo nacrtati histogram
 #                    sections - na koliko dijelova ćemo podijeliti histogram
 #                    no_rows - broj redaka histograma
 #                    no_cols - broj stupaca histograma
@@ -62,7 +62,22 @@ def draw_histograms_rows_quantile( data, classes, features, sections, no_rows, n
         ax[i].hist(data.iloc[classes[9][0]:classes[9][1], col].to_numpy(), 
                    bins=bins, color='purple', alpha=.5, label=malware_dict[9]) 
         
-        ax[i].set_title(data.columns.values[col])
+        ax[i].set_title(data.columns.values[col], fontsize=20)
         ax[i].set_yticks(()) # remove ticks on y-axis
-        ax[i].legend(loc='upper right')
+        ax[i].legend(loc='best')
         fig.tight_layout()
+        
+        
+# pomoćna funkcija za prikaz histograma (najbojih) značajki neke kategorije
+
+# ulazne varijable:
+#                    features_category - dataframe značajki kategorije
+#                    best_features_in_category - lista najboljih značajki dobivena funkcijom univariate(features_category, k_best )
+def get_best_features_in_category_index_list(features_category, best_features_in_category):
+    best_features_in_category_index_list=[]
+    for features in features_category.columns:
+        for best_features in best_features_in_category:
+            if (features == best_features):
+                best_features_in_category_index_list.append(features_category.columns.get_loc(features))
+    return best_features_in_category_index_list
+
