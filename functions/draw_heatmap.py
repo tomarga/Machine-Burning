@@ -19,4 +19,4 @@ def draw_heatmap (features_category, best_features_in_category):
                 best_features_in_category_dataframe.insert(best_features_in_category_dataframe.shape[1], features, features_category[features])
 
     plt.subplots(figsize=(20,15))
-    sn.heatmap(best_features_in_category_dataframe.corr(), cmap='Reds', annot=True)
+    sn.heatmap(best_features_in_category_dataframe.corr(), cmap='Purples', annot=True)

@@ -1,42 +1,12 @@
-# funkcija za univarijantni odabir značajki
-
-# ulazne varijable:
-#                     features_category - dataframe značajki kategorije
-#                     k_best - broj najboljih značajki koje funkcija vraća
-
-def univariate( features_category, k_best ):
-
-    # potrebni paketi
-    import numpy as np
-    import pandas as pd
-    import matplotlib.pyplot as plt
-    from sklearn.model_selection import train_test_split
-    from sklearn.feature_selection import SelectKBest, f_classif
-    
-    
-    features = pd.read_csv("https://raw.githubusercontent.com/mateastanisic/lfs/master/merged_all_features.csv")
-    
-    malware_train, malware_test, malware_classes_train, malware_classes_test = train_test_split( features_category.dropna(), features['Class'], test_size=0.4, random_state=47)
-    selector = SelectKBest(f_classif, k=k_best)
-    selector.fit(malware_train, malware_classes_train)
-
-    scores = -np.log10(replaceZeroes(selector.pvalues_))
-    indices = np.argsort(scores)[::-1]
-    noises = indices[k_best:]
-
-    return features_category.columns.values[indices[:k_best]]
-
-
-
-
 # funkcija koja uz univarijantni odabir značajki crta i graf
 
-# ulazne varijable:
+# ulazne varijable
+#                     class_column - stupac s klasama iz dataframe-a sa svim značajkama  
 #                     features_category - dataframe značajki kategorije
 #                     k_best - broj najboljih značajki koje funkcija vraća
 
 
-def univariate_plot( features_category, k_best ):
+def univariate_plot( class_column, features_category, k_best ):
 
     # potrebni paketi
     import numpy as np
@@ -44,11 +14,13 @@ def univariate_plot( features_category, k_best ):
     import matplotlib.pyplot as plt
     from sklearn.model_selection import train_test_split
     from sklearn.feature_selection import SelectKBest, f_classif
+
+    #brisanje konstanti
+    constant_columns = find_constants( features_category )
+    features_category.drop(constant_columns, axis=1, inplace=True)
+    print( '- izbačeno ', len( constant_columns), ' konstantnih značajki' )
     
-    
-    features = pd.read_csv("https://raw.githubusercontent.com/mateastanisic/lfs/master/merged_all_features.csv")
-    
-    malware_train, malware_test, malware_classes_train, malware_classes_test = train_test_split( features_category.dropna(), features['Class'], test_size=0.4, random_state=47)
+    malware_train, malware_test, malware_classes_train, malware_classes_test = train_test_split( features_category.dropna(), class_column, test_size=0.4, random_state=47)
     selector = SelectKBest(f_classif, k=k_best)
     selector.fit(malware_train, malware_classes_train)
 
@@ -75,7 +47,6 @@ def univariate_plot( features_category, k_best ):
     return features_category.columns.values[indices[:k_best]]
 
 
-
 # pomoćna funkcija 
 def replaceZeroes(data):
     
@@ -84,3 +55,17 @@ def replaceZeroes(data):
     min_nonzero = np.min(data[np.nonzero(data)])
     data[data == 0] = min_nonzero
     return data
+
+#brisanje konstantnih i kvazi-konstantnih značajki
+def find_constants( features_category ):
+
+    # potrebni paketi
+    import numpy as np
+    import pandas as pd
+    from sklearn.feature_selection import VarianceThreshold
+   
+    constant_filter = VarianceThreshold(threshold=0.01)
+    constant_filter.fit( features_category )
+    constant_columns = [column for column in features_category.columns if column not in features_category.columns[constant_filter.get_support()]]
+    return constant_columns
+                        
