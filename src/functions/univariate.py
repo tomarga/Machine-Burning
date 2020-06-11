@@ -27,6 +27,10 @@ def univariate_plot( class_column, features_category, k_best ):
     scores = -np.log10(replaceZeroes(selector.pvalues_))
     indices = np.argsort(scores)[::-1]
     noises = indices[k_best:]
+    
+    feature_scores = []
+    for i in range(k_best):
+        feature_scores.append(scores[indices[i]])
 
     plt.figure(figsize=(100,30))
     plt.grid(False)
@@ -44,7 +48,11 @@ def univariate_plot( class_column, features_category, k_best ):
     [ i.set_color("red") for i in plt.gca().get_xticklabels() if i.get_text() in [ features_category.columns.values[noise] for noise in noises] ]
 
     plt.show()
-    return features_category.columns.values[indices[:k_best]]
+    
+    univariate_features = pd.concat( [pd.DataFrame(features_category.columns.values[indices[:k_best]]), pd.DataFrame(feature_scores) ], axis=1 )
+    univariate_features.columns = [ "feature_names", "feature_score" ]
+    
+    return univariate_features
 
 
 # pomoćna funkcija 
