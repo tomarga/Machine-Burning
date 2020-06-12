@@ -177,7 +177,7 @@ def make_submisson_file( md5_hash, predictions, name ):
 
     result = pd.concat([md5_hash, pd.DataFrame(predictions)], axis=1, sort=False)
     result.columns = ['Id','Prediction1','Prediction2','Prediction3','Prediction4','Prediction5','Prediction6','Prediction7','Prediction8', 'Prediction9']
-    filename = 'data/submisson_' + name + '.csv'
+    filename = 'submisson_' + name + '.csv'
     result.to_csv(filename, index=False)
 
     return result
@@ -241,7 +241,7 @@ def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=10
     if load_or_make == "make":
         # for saving
         name = input("Ime za XGBClassifier?")
-        filename = 'data/model_xgb' + name + '.sav'
+        filename = 'model_xgb' + name + '.sav'
 
         basic_model_xgb = xgb.XGBClassifier(n_estimators=n_estimators, n_jobs=-1)
         basic_model_xgb.fit(X_train, y_train, early_stopping_rounds=early_stopping_rounds, eval_metric=eval_metric, eval_set=eval_set, verbose=True)
@@ -257,7 +257,7 @@ def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=10
       
         option = input()
         if option == '1':
-            filename = 'data/basic_model_xgb.sav'
+            filename = 'basic_model_xgb.sav'
         else:
             print('Ne postoji zatražena opcija!')
             raise ValueError('Ne postoji zatražena opcija - pri učitavanju XGBClassifiera!')
@@ -295,7 +295,7 @@ def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="
         
         option = input()
         if option == '1':
-            filename = 'data/RandomizedSearchCV10_basic_all_features_neg_log_loss.sav'
+            filename = 'RandomizedSearchCV10_basic_all_features_neg_log_loss.sav'
         else:
             print('Ne postoji zatražena opcija!')
             raise ValueError('Ne postoji zatražena opcija - pri učitavanju RandomizedSearchCV!')
@@ -319,7 +319,7 @@ def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="
     elif load_or_make == "make":
         # getting ready for saving later
         name = input('Unesi ime novo-pokrenutoga RandomizedSearchCV? ')
-        filename = 'data/RandomizedSearchCV_' + name + '.sav'
+        filename = 'RandomizedSearchCV_' + name + '.sav'
 
         model_XGB = XGBClassifier()
         # RandomizedSearchCV
@@ -375,7 +375,7 @@ def XGBClassifier_with_params(grid_or_random_search, X_train, y_train, X_test, y
 
     elif load_or_make == "make":
         name = input('Unesi ime novo-pokrenutoga XGBClassifiera? ')
-        filename = 'data/XGBClassifier_' + name + '.sav'
+        filename = 'XGBClassifier_' + name + '.sav'
 
         # making a model of best parameters
         param_tuning_xgb = XGBClassifier(reg_lambda        = grid_or_random_search.best_params_['reg_lambda'],
@@ -427,7 +427,7 @@ def GridSearchCV_load_or_make(param_grid, data, labels, cv=5):
         m_XGB = XGBClassifier()
 
         name = input("Ime za novi GridSearchCV?")
-        filename = 'data/GridSearchCV_' + name + '.sav'
+        filename = 'GridSearchCV_' + name + '.sav'
 
         # grid search
         grid_search = GridSearchCV(m_XGB, param_grid=param_grid, cv=cv, verbose=2, n_jobs=-1)
