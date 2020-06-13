@@ -89,7 +89,7 @@ def make_and_plot_confusion_matrix(test_lebel, best_preds):
     plt.yticks(range(height), names)
     plt.grid(False)
 
-
+# plot learning curves
 def plot_learning_curve( model, X_train, y_train, X_test, y_test, cv, seed ):
 
     import warnings
@@ -171,9 +171,10 @@ def plot_learning_curve( model, X_train, y_train, X_test, y_test, cv, seed ):
     plt.title('XGBoost pogreška klasifikacije')
     plt.show()
 
-
-def make_submisson_file( md5_hash, predictions, name ):
+# make submission file
+def make_submisson_file( md5_hash, predictions ):
     import pandas as pd
+    name = input("Ime za submisson file? ")
 
     result = pd.concat([md5_hash, pd.DataFrame(predictions)], axis=1, sort=False)
     result.columns = ['Id','Prediction1','Prediction2','Prediction3','Prediction4','Prediction5','Prediction6','Prediction7','Prediction8', 'Prediction9']
@@ -182,6 +183,7 @@ def make_submisson_file( md5_hash, predictions, name ):
 
     return result
 
+# distribution of malware-s over classes
 def draw_malware_distribution_over_classes(classes):
     import matplotlib.pyplot as plt
 
@@ -198,7 +200,7 @@ def draw_malware_distribution_over_classes(classes):
     quantity = list(features_class_quantity.values())
     print("Broj malwarea po klasama:")
     print(features_class_quantity.values())
-    print("Postotci malwarea po klasama:")
+    print("Postotci malware-aa po klasama:")
     print(features_class_precentage)
 
     fig, ax = plt.subplots(figsize=(15,7))
@@ -227,7 +229,7 @@ def report(results, n_top=3):
             params.append(results['params'][candidate])
     return params
 
-# valja
+# make or load basic model
 def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=1000, early_stopping_rounds=20, eval_metric=["merror", "mlogloss"]):
     import xgboost as xgb
     from xgboost import XGBClassifier
@@ -236,28 +238,71 @@ def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=10
 
     eval_set = [(X_train, y_train), (X_test, y_test)]
     
-    load_or_make = input("Load or make XGBClassifier?")
+    load_or_make = input("Load or make XGBClassifier? ")
 
     if load_or_make == "make":
         # for saving
-        name = input("Ime za XGBClassifier?")
-        filename = 'data/model_xgb' + name + '.sav'
+        name = input("Ime za XGBClassifier? ")
+        filename = 'data/model_xgb_' + name + '.sav'
 
         basic_model_xgb = xgb.XGBClassifier(n_estimators=n_estimators, n_jobs=-1)
         basic_model_xgb.fit(X_train, y_train, early_stopping_rounds=early_stopping_rounds, eval_metric=eval_metric, eval_set=eval_set, verbose=True)
         
         # save
         pickle.dump(basic_model_xgb, open(filename, 'wb'))
+        print('XGBClassifier je spremljen u: ' + filename )
         return basic_model_xgb
         
     elif load_or_make == "load":
         # pick model
         print('Izaberi XGBClassifier:')
-        print('1. basic_model_xgb.sav')
-      
+        print('1. basic_model_xgb')
+        print('2. basic_one_gram')
+        #print('3. basic_metadata_bytes.sav')
+        print('4. basic_entropy')
+        print('5. basic_image')
+        print('6. basic_string_len')
+        print('7. basic_metadata_asm')
+        print('8. basic_symbols')
+        print('9. basic_opcode')
+        print('10. basic_reg')
+        print('11. basic_section')
+        print('12. basic_dd')
+        print('13. basic_api')
+        print('14. basic_keywords')
+        print('15. all_features')
+
         option = input()
         if option == '1':
-            filename = 'data/basic_model_xgb.sav'
+            filename = '../dataset/basic_model/basic_model_xgb.sav'
+        elif option == '2':
+            filename = '../dataset/basic_model/model_xgb_one_gram.sav'
+        #elif option == '3':
+        #    filename = '../../dataset/basic_model/model_xgb_one_gram.sav'
+        elif option == '4':
+            filename = '../dataset/basic_model/model_xgb_entropija_80_20.sav'
+        elif option == '5':
+            filename = '../dataset/basic_model/model_xgb_image_80_20.sav'
+        elif option == '6':
+            filename = '../dataset/basic_model/model_xgb_string_length_features_80_20.sav'
+        elif option == '7':
+            filename = '../dataset/basic_model/model_xgb_metadata_asm_features.sav'
+        elif option == '8':
+            filename = '../dataset/basic_model/model_xgb_symbols_features.sav'
+        elif option == '9':
+            filename = '../dataset/basic_model/model_xgb_opcode_features.sav'
+        elif option == '10':
+            filename = '../dataset/basic_model/model_xgb_reg_features.sav'
+        elif option == '11':
+            filename = '../dataset/basic_model/model_xgb_section_features_80_20.sav'
+        elif option == '12':
+            filename = '../dataset/basic_model/model_xgb_dd_features.sav'
+        elif option == '13':
+            filename = '../dataset/basic_model/model_xgb_apis.sav'
+        elif option == '14':
+            filename = '../dataset/basic_model/model_xgb_key_features.sav'
+        elif option == '15':
+            filename = '../dataset/basic_model/model_xgb_svi_featuri.sav'
         else:
             print('Ne postoji zatražena opcija!')
             raise ValueError('Ne postoji zatražena opcija - pri učitavanju XGBClassifiera!')
@@ -273,7 +318,7 @@ def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=10
         raise ValueError('Nije upisano load ili make - pri učitavanju/izradi XGBClassifiera!')
         return
   
-# 
+# randomly search for hyperparameters
 def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="accuracy", n_iter=20, random_state=47):
     import xgboost as xgb
     from xgboost import XGBClassifier
@@ -295,7 +340,7 @@ def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="
         
         option = input()
         if option == '1':
-            filename = 'data/RandomizedSearchCV10_basic_all_features_neg_log_loss.sav'
+            filename = '.../dataset/basic_modeli/RandomizedSearchCV10_basic_all_features_neg_log_loss.sav'
         else:
             print('Ne postoji zatražena opcija!')
             raise ValueError('Ne postoji zatražena opcija - pri učitavanju RandomizedSearchCV!')
@@ -337,6 +382,7 @@ def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="
 
         # save 
         pickle.dump(rand_XGB, open(filename, 'wb'))
+        print('RandomizedSearchCV je spremljen u: ' + filename )
 
         # show results
         rand_XGB_results_df = pd.DataFrame(rand_XGB.cv_results_)[['mean_test_score', 'std_test_score', 'params', 'rank_test_score']]
@@ -355,6 +401,7 @@ def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="
         raise ValueError('Nije upisano load ili make - pri učitavanju/izradi RandomizedSearchCV!')
         return
 
+# make model with specific parameters
 def XGBClassifier_with_params(grid_or_random_search, X_train, y_train, X_test, y_test, early_stopping_rounds=20, eval_metric=["merror", "mlogloss"]):
     import xgboost as xgb
     from xgboost import XGBClassifier
@@ -394,6 +441,7 @@ def XGBClassifier_with_params(grid_or_random_search, X_train, y_train, X_test, y
 
         # save 
         pickle.dump(param_tuning_xgb, open(filename, 'wb'))
+        print("XGBClassifier je spremljen u: " + filename )
 
         # show results
         param_tuning_xgb_results_df = model_results(param_tuning_xgb, X_test, y_test)
@@ -406,6 +454,7 @@ def XGBClassifier_with_params(grid_or_random_search, X_train, y_train, X_test, y
         raise ValueError('Nije upisano load ili make - pri učitavanju/izradi XGBClassifier_with_params!')
         return
 
+#grid search in space of given parameters
 def GridSearchCV_load_or_make(param_grid, data, labels, cv=5):
     import xgboost as xgb
     from xgboost import XGBClassifier
@@ -426,7 +475,7 @@ def GridSearchCV_load_or_make(param_grid, data, labels, cv=5):
     elif load_or_make == "make":
         m_XGB = XGBClassifier()
 
-        name = input("Ime za novi GridSearchCV?")
+        name = input("Ime za novi GridSearchCV? ")
         filename = 'data/GridSearchCV_' + name + '.sav'
 
         # grid search
@@ -435,6 +484,7 @@ def GridSearchCV_load_or_make(param_grid, data, labels, cv=5):
 
         # save 
         pickle.dump(grid_search, open(filename, 'wb'))
+        print("GridSearchCV je spremljen u: " + filename )
 
         # show results
         grid_search_results_df = pd.DataFrame(grid_search.cv_results_)[['mean_test_score', 'std_test_score', 'params', 'rank_test_score']]
