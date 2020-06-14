@@ -319,7 +319,7 @@ def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=10
         return
   
 # randomly search for hyperparameters
-def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="accuracy", n_iter=20, random_state=47):
+def RandomizedSearchCV_load_or_make(model, data, labels, random_grid, cv="5", scoring="accuracy", n_iter=20, random_state=47):
     import xgboost as xgb
     from xgboost import XGBClassifier
     from sklearn.model_selection import RandomizedSearchCV
@@ -366,7 +366,7 @@ def RandomizedSearchCV_load_or_make(data, labels, random_grid, cv="5", scoring="
         name = input('Unesi ime novo-pokrenutoga RandomizedSearchCV? ')
         filename = 'data/RandomizedSearchCV_' + name + '.sav'
 
-        model_XGB = XGBClassifier()
+        model_XGB = model
         # RandomizedSearchCV
         rand_XGB = RandomizedSearchCV(model_XGB, 
                                       param_distributions = random_grid, 
@@ -455,7 +455,7 @@ def XGBClassifier_with_params(grid_or_random_search, X_train, y_train, X_test, y
         return
 
 #grid search in space of given parameters
-def GridSearchCV_load_or_make(param_grid, data, labels, cv=5):
+def GridSearchCV_load_or_make(model, param_grid, data, labels, cv=5):
     import xgboost as xgb
     from xgboost import XGBClassifier
     import pickle
