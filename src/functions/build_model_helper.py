@@ -62,11 +62,108 @@ def choose_features():
             raise ValueError("Niste upisali valjani broj! Upišite ili 1 ili 2 ili 3 ili 4! ")
             return
     elif scoring == "2":
-        raise ValueError("Podaci još nisu pripremljeni")
-        return
+        
+        print("1. univarijantna metoda + rfecv ")
+        #print("2. samo rfecv ")
+        print("3. univarijantna metoda + izbacivanje koreliranih značajki + rfecv ")
+        print("4. izbacivanje koreliranih značajki + rfecv ")
+        option = input("Koje značajke želim s obzirom na korištene feature selection tehnike? ")
+        print("")
+
+        if option == "1":
+            # UNI + RFECV
+            # load features from train and test dataset given using rfecv
+            selected_features_train = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/uni/features_train_UNI_and_RFECV_rfecv_rf_OVO_cv5_nestim200.csv")
+            selected_features_test = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/uni/features_test_UNI_and_RFECV_rfecv_rf_OVO_cv5_nestim200.csv")
+
+            # load table with feature names and their scores, sorted
+            feature_importances = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/uni/UNI_and_RFECV_rfecv_rf_OVO_cv5_nestim200_feature_selected_with_names_and_importance_scores_sorted.csv")
+            return [feature_importances, selected_features_train, selected_features_test]
+        #elif option == "2":
+            # RFECV
+            # load features from train and test dataset given using rfecv
+        #    selected_features_train = pd.read_csv("")
+        #    selected_features_test = pd.read_csv("")
+
+            # load table with feature names and their scores, sorted
+        #    feature_importances = pd.read_csv("")
+        #    return [feature_importances, selected_features_train, selected_features_test]
+        elif option == "3":
+            # UNI + COR + RFECV
+            # load features from train and test dataset given using rfecv
+            selected_features_train = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/uni_and_cor/features_train_uni_and_cor_rfecv_rf_OVO_cv5_nestim200.csv")
+            selected_features_test = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/uni_and_cor/features_test_uni_and_cor_rfecv_rf_OVO_cv5_nestim200.csv")
+
+            # load table with feature names and their scores, sorted
+            feature_importances = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/uni_and_cor/uni_and_cor_rfecv_rf_OVO_cv5_nestim200_feature_selected_with_names_and_importance_scores_sorted.csv")
+            return [feature_importances, selected_features_train, selected_features_test]
+
+        elif option == "4":
+            # COR + RFECV
+            # load features from train and test dataset given using rfecv
+            selected_features_train = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/cor/features_train_cor_rfecv_rf_OVO_cv5_nestim200.csv")
+            selected_features_test = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/cor/features_test_cor_rfecv_rf_OVO_cv5_nestim200.csv")
+
+            # load table with feature names and their scores, sorted
+            feature_importances = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/ROC_AUC/cor/cor_rfecv_rf_OVO_cv5_nestim200_feature_selected_with_names_and_importance_scores_sorted.csv")
+            return [feature_importances, selected_features_train, selected_features_test]
+
+        else:
+            print('Ne postoji opcija ' + option +'!')
+            raise ValueError("Niste upisali valjani broj! Upišite ili 1 ili 2 ili 3 ili 4! ")
+            return
     elif scoring == "3":
-        raise ValueError("Podaci još nisu pripremljeni")
-        return
+        #print("1. univarijantna metoda + rfecv ")
+        print("2. samo rfecv ")
+        print("3. univarijantna metoda + izbacivanje koreliranih značajki + rfecv ")
+        print("4. izbacivanje koreliranih značajki + rfecv ")
+        option = input("Koje značajke želim s obzirom na korištene feature selection tehnike? ")
+        print("")
+
+        #if option == "1":
+            # UNI + RFECV
+            # load features from train and test dataset given using rfecv
+        #    selected_features_train = pd.read_csv("")
+        #    selected_features_test = pd.read_csv("")
+
+            # load table with feature names and their scores, sorted
+        #    feature_importances = pd.read_csv("")
+        #    return [feature_importances, selected_features_train, selected_features_test]
+
+        if option == "2":
+            # RFECV
+            # load features from train and test dataset given using rfecv
+            selected_features_train = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/samo%20rfecv/features_train_SAMORFECV_rfecv_rf_F1_cv5_nestim200.csv")
+            selected_features_test = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/samo%20rfecv/features_test_SAMORFECV_rfecv_rf_F1_cv5_nestim200.csv")
+
+            # load table with feature names and their scores, sorted
+            feature_importances = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/samo%20rfecv/SAMORFECV_rfecv_rf_F1_cv5_nestim200_feature_selected_with_names_and_importance_scores_sorted.csv")
+            return [feature_importances, selected_features_train, selected_features_test]
+
+        elif option == "3":
+            # UNI + COR + RFECV
+            # load features from train and test dataset given using rfecv
+            selected_features_train = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/uni_and_cor/features_train_uni_and_cor_rfecv_rf_F1_cv5_nestim200.csv")
+            selected_features_test = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/uni_and_cor/features_test_uni_and_cor_rfecv_rf_F1_cv5_nestim200.csv")
+
+            # load table with feature names and their scores, sorted
+            feature_importances = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/uni_and_cor/uni_and_cor_rfecv_rf_F1_cv5_nestim200_feature_selected_with_names_and_importance_scores_sorted.csv")
+            return [feature_importances, selected_features_train, selected_features_test]
+
+        elif option == "4":
+            # COR + RFECV
+            # load features from train and test dataset given using rfecv
+            selected_features_train = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/cor/features_train_cor_rfecv_rf_F1_cv5_nestim200.csv")
+            selected_features_test = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/cor/features_test_cor_rfecv_rf_F1_cv5_nestim200.csv")
+
+            # load table with feature names and their scores, sorted
+            feature_importances = pd.read_csv("https://raw.githubusercontent.com/tomarga/Machine-Burning/master/dataset/selected%20features/F1/cor/cor_rfecv_rf_F1_cv5_nestim200_feature_selected_with_names_and_importance_scores_sorted.csv")
+            return [feature_importances, selected_features_train, selected_features_test]
+
+        else:
+            print('Ne postoji opcija ' + option +'!')
+            raise ValueError("Niste upisali valjani broj! Upišite ili 1 ili 2 ili 3 ili 4! ")
+            return
     else:
         print('Ne postoji opcija ' + scoring +'!')
         raise ValueError("Niste upisali valjani broj! Upišite ili 1 ili 2 ili 3! ")
@@ -331,3 +428,27 @@ def pca_plot(data, labels):
     ax = plt.axes(projection='3d')
     ax.scatter(X_pca_3[:, 0], X_pca_3[:, 1], X_pca_3[:, 2], c = labels, cmap=plt.cm.nipy_spectral, linewidth=0.5)
 
+
+# print model results
+def model_results(model, test_data, test_lebel):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+    from tabulate import tabulate
+    from sklearn import metrics
+    
+    table = pd.DataFrame(columns=["metrika", "uspješnost"])
+    print('Uspješnost modela:')
+
+    proba           = model.predict_proba(test_data)
+    predicted_label = np.asarray(model.predict(test_data))
+    
+    table.loc[0]  = ["logloss"] + [metrics.log_loss(test_lebel, proba)]
+    table.loc[1]  = ["accuracy_test"] + [metrics.accuracy_score(test_lebel, predicted_label)]
+    table.loc[2]  = ["F1_test"] + [metrics.f1_score(test_lebel, predicted_label,average='weighted')]
+    table.loc[3]  = ["precision_test"] + [metrics.precision_score(test_lebel, predicted_label, average='weighted')]
+    table.loc[4]  = ["auc_test_ovr"] + [metrics.roc_auc_score(test_lebel, proba, multi_class="ovr",average='weighted')]  
+    table.loc[5]  = ["auc_test_ovo"] + [metrics.roc_auc_score(test_lebel, proba, multi_class="ovo",average='weighted')]  
+    table.loc[6]  = ["r2_test"] + [metrics.r2_score(test_lebel.astype(int), predicted_label.astype(int))]
+    
+    return tabl
