@@ -451,4 +451,4 @@ def model_results(model, test_data, test_lebel):
     table.loc[5]  = ["auc_test_ovo"] + [metrics.roc_auc_score(test_lebel, proba, multi_class="ovo",average='weighted')]  
     table.loc[6]  = ["r2_test"] + [metrics.r2_score(test_lebel.astype(int), predicted_label.astype(int))]
     
-    return tabl
+    return table

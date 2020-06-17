@@ -178,7 +178,7 @@ def make_submisson_file( md5_hash, predictions ):
 
     result = pd.concat([md5_hash, pd.DataFrame(predictions)], axis=1, sort=False)
     result.columns = ['Id','Prediction1','Prediction2','Prediction3','Prediction4','Prediction5','Prediction6','Prediction7','Prediction8', 'Prediction9']
-    filename = 'data/submisson_' + name + '.csv'
+    filename = '../dataset/submissioni/submisson_' + name + '.csv'
     result.to_csv(filename, index=False)
 
     return result
@@ -318,6 +318,96 @@ def XGBClassifier_load_or_make(X_train, y_train, X_test, y_test, n_estimators=10
         raise ValueError('Nije upisano load ili make - pri učitavanju/izradi XGBClassifiera!')
         return
   
+#newer xgboost version
+def XGBClassifier_newer_load_or_make(X_train, y_train, X_test, y_test, n_estimators=1000, early_stopping_rounds=20, eval_metric=["merror", "mlogloss"]):
+    import xgboost as xgb
+    from xgboost import XGBClassifier
+    import pickle
+    import numpy as np
+
+    eval_set = [(X_train, y_train), (X_test, y_test)]
+    
+    load_or_make = input("Load or make XGBClassifier? ")
+
+    if load_or_make == "make":
+        # for saving
+        name = input("Ime za XGBClassifier? ")
+        filename = '../dataset/basic_model/model_xgb_' + name + '.sav'
+
+        basic_model_xgb = xgb.XGBClassifier(n_estimators=n_estimators, n_jobs=-1)
+        basic_model_xgb.fit(X_train, y_train, early_stopping_rounds=early_stopping_rounds, eval_metric=eval_metric, eval_set=eval_set, verbose=True)
+        
+        # save
+        print('XGBClassifier je spremljen u: ' + filename )
+        basic_model_xgb.save_model(filename)
+        return basic_model_xgb
+        
+    elif load_or_make == "load":
+        # pick model
+        print('Izaberi XGBClassifier:')
+        print('1. basic_model_xgb')
+        print('2. basic_one_gram')
+        #print('3. basic_metadata_bytes.sav')
+        print('4. basic_entropy')
+        print('5. basic_image')
+        print('6. basic_string_len')
+        print('7. basic_metadata_asm')
+        print('8. basic_symbols')
+        print('9. basic_opcode')
+        print('10. basic_reg')
+        print('11. basic_section')
+        print('12. basic_dd')
+        print('13. basic_api')
+        print('14. basic_keywords')
+        print('15. all_features')
+
+        option = input()
+        if option == '1':
+            filename = '../dataset/basic_model/basic_model_xgb.sav'
+        elif option == '2':
+            filename = '../dataset/basic_model/model_xgb_one_gram.sav'
+        #elif option == '3':
+        #    filename = '../../dataset/basic_model/model_xgb_one_gram.sav'
+        elif option == '4':
+            filename = '../dataset/basic_model/model_xgb_entropija_80_20.sav'
+        elif option == '5':
+            filename = '../dataset/basic_model/model_xgb_image_80_20.sav'
+        elif option == '6':
+            filename = '../dataset/basic_model/model_xgb_string_length_features_80_20.sav'
+        elif option == '7':
+            filename = '../dataset/basic_model/model_xgb_metadata_asm_features.sav'
+        elif option == '8':
+            filename = '../dataset/basic_model/model_xgb_symbols_features.sav'
+        elif option == '9':
+            filename = '../dataset/basic_model/model_xgb_opcode_features.sav'
+        elif option == '10':
+            filename = '../dataset/basic_model/model_xgb_reg_features.sav'
+        elif option == '11':
+            filename = '../dataset/basic_model/model_xgb_section_features_80_20.sav'
+        elif option == '12':
+            filename = '../dataset/basic_model/model_xgb_dd_features.sav'
+        elif option == '13':
+            filename = '../dataset/basic_model/model_xgb_apis.sav'
+        elif option == '14':
+            filename = '../dataset/basic_model/model_xgb_key_features.sav'
+        elif option == '15':
+            filename = '../dataset/basic_model/model_xgb_svi_featuri.sav'
+        else:
+            print('Ne postoji zatražena opcija!')
+            raise ValueError('Ne postoji zatražena opcija - pri učitavanju XGBClassifiera!')
+            return 
+        
+        basic_model_xgb = pickle.load(open(filename, 'rb'))
+        basic_model_xgb.get_params()
+
+        return basic_model_xgb
+
+    else:
+        print("Krivi unos! Upiši 'load' ili 'make'!")
+        raise ValueError('Nije upisano load ili make - pri učitavanju/izradi XGBClassifiera!')
+        return
+
+
 # randomly search for hyperparameters
 def RandomizedSearchCV_load_or_make(model, data, labels, random_grid, cv="5", scoring="accuracy", n_iter=20, random_state=47):
     import xgboost as xgb
@@ -503,3 +593,74 @@ def GridSearchCV_load_or_make(model, param_grid, data, labels, cv=5):
         print("Krivi unos! Upiši 'load' ili 'make'!")
         raise ValueError('Nije upisano load ili make - pri učitavanju GridSearchCV_load_or_make!')
         return
+
+# distribution of malware-s over classes
+def draw_malware_distribution_over_classes(classes):
+    import matplotlib.pyplot as plt
+
+    features_class_quantity = { }
+    features_class_precentage = []
+
+    malware_dict = { 1 : 'Ramnit', 2 : 'Lollipop', 3 : 'Kelihos_ver3', 4 : 'Vundo', 5 : 'Simba', 
+                 6 : 'Tracur', 7 : 'Kelihos_ver1', 8 : 'Obfuscator.ACY', 9 : 'Gatak'}
+
+    for i in range(1,10):
+        features_class_quantity[i] = sum( classes == i)  
+        features_class_precentage.append(sum(classes == i)/len(classes) * 100)
+
+    quantity = list(features_class_quantity.values())
+    print("Broj malwarea po klasama:")
+    print(features_class_quantity.values())
+    print("Postotci malware-aa po klasama:")
+    print(features_class_precentage)
+
+    fig, ax = plt.subplots(figsize=(15,7))
+    ax.bar(list(malware_dict.values()), quantity, color = ['Salmon', 'lightblue', 'lightgreen', 'yellow', 'pink', 'cyan', 'plum', 'peachpuff', 'khaki'])
+    plt.xticks(rotation='vertical')
+    plt.xlabel('Klase malware-a', fontweight='bold')
+    plt.ylabel('Količina', fontweight='bold')
+
+    plt.show()
+
+def compare_malware_distribution_over_classes(classes):
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    features_class_quantity = { }
+    features_class_precentage = []
+
+    malware_dict = { 1 : 'Ramnit', 2 : 'Lollipop', 3 : 'Kelihos_ver3', 4 : 'Vundo', 5 : 'Simba', 
+                 6 : 'Tracur', 7 : 'Kelihos_ver1', 8 : 'Obfuscator.ACY', 9 : 'Gatak'}
+    features_train = pd.read_csv("https://raw.githubusercontent.com/mateastanisic/lfs/master/merged_all_features.csv")
+
+    
+    classes_begining_and_end_in_features = { }
+    last = 0
+
+    for i in range(1,10):
+        classes_begining_and_end_in_features[i] = [last, last + len(features_train.loc[features_train.Class == i]) - 1]
+        last = last + len(features_train.loc[features_train.Class == i])
+
+    features_class_quantity_original = { }
+
+    for i in range(1,10):
+        features_class_quantity_original[i] = classes_begining_and_end_in_features[i][1] - classes_begining_and_end_in_features[i][0]  
+        features_class_quantity[i] = sum( classes == i)  
+        
+    classes_original = list(malware_dict.values())
+    quantity_original = list(features_class_quantity_original.values())
+    quantity_test = list(features_class_quantity.values())
+    
+    listaa = [ classes_original, quantity_original, quantity_test ]
+    df = pd.DataFrame() 
+    df['Classes'] = classes_original
+    df['Original'] = quantity_original
+    df['Test'] = quantity_test
+    df.set_index("Classes", inplace = True) 
+    
+    
+    df.plot( kind="bar", figsize=( 15,5 ), color=['lightskyblue', 'darkblue'], title = "Distribucija malwarea po klasama",
+            rot=1 ).title.set_size( 15 )
+    plt.ylabel( "Malware quantity", fontsize = 10 )
+    plt.show()
+
