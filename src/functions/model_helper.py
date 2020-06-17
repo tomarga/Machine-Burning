@@ -46,6 +46,39 @@ def plot_feature_importance(model, feature_columns):
     ax.set_title('Važnost značajki')
     plt.show()
 
+
+# plot feature importance
+def plot_feature_importance2(model, number_of_features_to_use, feature_importances ):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+    
+    # convert arrays to dataframes
+    df = pd.DataFrame( [feature_importances["feature_name"].values[:number_of_features_to_use].ravel(), model.feature_importances_.ravel()])
+    df = df.T
+    df.columns = ["names", "importances"]
+    df = df.sort_values(by=["importances"], ascending=False)
+
+    feature_importance = df.iloc[:,1].values[:50].ravel()
+    feature_importance = 100.0 * (feature_importance / feature_importance.max())
+    y_pos  = np.arange(feature_importance.shape[0]) + .5
+    fig, ax = plt.subplots()
+    f = fig
+    fig.set_size_inches(18.5, 10.5, forward=True)
+    ax.barh(y_pos, 
+            feature_importance, 
+            align='center', 
+            color='green', 
+            ecolor='black', 
+            height=0.5)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(df.iloc[:,0].values[:100].ravel())
+    ax.invert_yaxis()
+    ax.set_xlabel('Relativna važnost značajki')
+    ax.set_title('Važnost značajki')
+    plt.show()
+
+
 # plot fancy confusion matrix
 def make_and_plot_confusion_matrix(test_lebel, best_preds):
     import matplotlib.pyplot as plt

@@ -175,6 +175,7 @@ def features_type_quantity(feature_names, feature_train_original):
     plt.xticks(rotation='vertical')
     plt.xlabel('Kategorija značajki', fontweight='bold')
     plt.ylabel('Broj odabranih značajki', fontweight='bold')
+    ax.grid(False)
 
     plt.show()   
 
